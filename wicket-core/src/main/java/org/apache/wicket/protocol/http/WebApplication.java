@@ -45,6 +45,8 @@ import org.apache.wicket.core.util.file.WebApplicationPath;
 import org.apache.wicket.core.util.resource.ClassPathResourceFinder;
 import org.apache.wicket.csp.CSPHeaderConfiguration;
 import org.apache.wicket.csp.ContentSecurityPolicySettings;
+import org.apache.wicket.fetchmetadata.FetchMetadataConfiguration;
+import org.apache.wicket.fetchmetadata.FetchMetadataRequestCycleListener;
 import org.apache.wicket.markup.MarkupType;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -1110,5 +1112,10 @@ public abstract class WebApplication extends Application
 			cspSettings = newCspSettings();
 		}
 		return cspSettings;
+	}
+
+	// TODO: This should only be called once
+	public void enableFetchMetadata(FetchMetadataConfiguration fetchMetadataConfiguration) {
+		getRequestCycleListeners().add(new FetchMetadataRequestCycleListener(fetchMetadataConfiguration));
 	}
 }
