@@ -33,6 +33,7 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.*;
 import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.util.lang.Checks;
 import org.apache.wicket.util.string.Strings;
@@ -319,7 +320,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 */
 	protected boolean hasFetchMetadataHeaders(HttpServletRequest containerRequest)
 	{
-		String secFetchSiteValue = containerRequest.getHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER);
+		String secFetchSiteValue = containerRequest.getHeader(SEC_FETCH_SITE_HEADER);
 		return !Strings.isEmpty(secFetchSiteValue);
 	}
 
