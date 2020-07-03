@@ -484,7 +484,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
     {
 		//check if sourceUri exists before checking for whitelisted hosts,
 		// if not set sourceUri to no origin for logging purposes
-    	if (sourceUri == null || sourceUri.isEmpty())
+    	if (Strings.isEmpty(sourceUri))
 		{
 			sourceUri = "no origin";
 		}
