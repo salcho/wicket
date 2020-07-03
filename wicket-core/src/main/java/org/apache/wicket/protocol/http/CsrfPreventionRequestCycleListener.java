@@ -496,25 +496,24 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				return;
 			}
 		}
-        if (!fetchMetadataPolicy.isRequestAllowed(request))
-        {
-            log.debug("Request is not allowed by the resource isolation policy, {}", conflictingOriginAction);
-            switch (conflictingOriginAction)
-            {
-                case ALLOW :
-                    allowHandler(request, sourceUri, page);
-                    break;
-                case SUPPRESS :
-                    suppressHandler(request, sourceUri, page);
-                    break;
-                case ABORT :
-                    abortHandler(request, sourceUri, page);
-                    break;
-            }
-        }
-        else
+        if (fetchMetadataPolicy.isRequestAllowed(request))
         {
             matchingOrigin(request, sourceUri, page);
+            return;
+        }
+        
+        log.debug("Request is not allowed by the resource isolation policy, {}", conflictingOriginAction);
+        switch (conflictingOriginAction)
+        {
+            case ALLOW :
+                allowHandler(request, sourceUri, page);
+                break;
+            case SUPPRESS :
+                suppressHandler(request, sourceUri, page);
+                break;
+            case ABORT :
+                abortHandler(request, sourceUri, page);
+                break;
         }
     }
 
