@@ -122,7 +122,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	/**
 	 * The action to perform when a missing or conflicting source URI is detected.
 	 */
-	public enum CsrfAction {
+	public enum CsrfAction
+	{
 		/** Aborts the request and throws an exception when a CSRF request is detected. */
 		ABORT {
 			@Override
@@ -313,8 +314,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 */
 	protected boolean isChecked(IRequestHandler handler)
 	{
-		return handler instanceof IPageRequestHandler &&
-			!(handler instanceof RenderPageRequestHandler);
+		return handler instanceof IPageRequestHandler
+			&& !(handler instanceof RenderPageRequestHandler);
 	}
 
 	/**
@@ -359,17 +360,17 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 			IRequestablePage targetedPage = prh.getPage();
 			HttpServletRequest containerRequest = (HttpServletRequest)cycle.getRequest()
 				.getContainerRequest();
-            String sourceUri = getSourceUri(containerRequest);
+			String sourceUri = getSourceUri(containerRequest);
 
 			// Check if the page should be CSRF protected
 			if (isChecked(targetedPage))
 			{
-				//check sec-fetch-site header and call the fetch metadata check if present
+				// check sec-fetch-site header and call the fetch metadata check if present
 				if (hasFetchMetadataHeaders(containerRequest))
 				{
 					WebResponse webResponse = (WebResponse)cycle.getResponse();
-					//TODO: should we define "Vary" as a header in ResourceIsolationPolicy / somewhere else?
-					webResponse.setHeader("Vary", "Sec-Fetch-Dest, Sec-Fetch-Site, Sect-Fetch-Mode");
+					webResponse.setHeader("Vary",
+						"Sec-Fetch-Dest, Sec-Fetch-Site, Sec-Fetch-Mode");
 					checkRequestFetchMetadata(containerRequest, sourceUri, targetedPage);
 				}
 				else
@@ -383,7 +384,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				if (log.isDebugEnabled())
 				{
 					log.debug("Targeted page {} was opted out of the CSRF origin checks, allowed",
-							targetedPage.getClass().getName());
+						targetedPage.getClass().getName());
 				}
 				allowHandler(containerRequest, sourceUri, targetedPage);
 			}
@@ -425,7 +426,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is the target of the request
 	 */
-	protected void checkRequestOriginReferer(HttpServletRequest request, String sourceUri, IRequestablePage page)
+	protected void checkRequestOriginReferer(HttpServletRequest request, String sourceUri,
+		IRequestablePage page)
 	{
 		if (sourceUri == null || sourceUri.isEmpty())
 		{
@@ -477,52 +479,55 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	}
 
 	/**
-     * Performs the check of the {@code Sec-Fetch-*} headers that are targeted at the
-     * {@code page}.
-     * @param request
-     *          the current container request
-     * @param sourceUri
-     *          the source URI
-     * @param page
-     *          the page that is the target of the request
+	 * Performs the check of the {@code Sec-Fetch-*} headers that are targeted at the {@code page}.
+	 * 
+	 * @param request
+	 *            the current container request
+	 * @param sourceUri
+	 *            the source URI
+	 * @param page
+	 *            the page that is the target of the request
 	 */
-	protected void checkRequestFetchMetadata(HttpServletRequest request, String sourceUri, IRequestablePage page)
-    {
-		//check if sourceUri exists before checking for whitelisted hosts,
+	protected void checkRequestFetchMetadata(HttpServletRequest request, String sourceUri,
+		IRequestablePage page)
+	{
+		// check if sourceUri exists before checking for whitelisted hosts,
 		// if not set sourceUri to no origin for logging purposes
-    	if (Strings.isEmpty(sourceUri))
+		if (Strings.isEmpty(sourceUri))
 		{
 			sourceUri = "no origin";
 		}
 		else
 		{
-			// if the origin is a know and trusted origin, don't check any further but allow the request
+			// if the origin is a know and trusted origin, don't check any further but allow the
+			// request
 			if (isWhitelistedHost(sourceUri))
 			{
 				whitelistedHandler(request, sourceUri, page);
 				return;
 			}
 		}
-        if (fetchMetadataPolicy.isRequestAllowed(request))
-        {
-            matchingOrigin(request, sourceUri, page);
-            return;
-        }
-        
-        log.debug("Request is not allowed by the resource isolation policy, {}", conflictingOriginAction);
-        switch (conflictingOriginAction)
-        {
-            case ALLOW :
-                allowHandler(request, sourceUri, page);
-                break;
-            case SUPPRESS :
-                suppressHandler(request, sourceUri, page);
-                break;
-            case ABORT :
-                abortHandler(request, sourceUri, page);
-                break;
-        }
-    }
+		if (fetchMetadataPolicy.isRequestAllowed(request))
+		{
+			matchingOrigin(request, sourceUri, page);
+			return;
+		}
+
+		log.debug("Request is not allowed by the resource isolation policy, {}",
+			conflictingOriginAction);
+		switch (conflictingOriginAction)
+		{
+			case ALLOW :
+				allowHandler(request, sourceUri, page);
+				break;
+			case SUPPRESS :
+				suppressHandler(request, sourceUri, page);
+				break;
+			case ABORT :
+				abortHandler(request, sourceUri, page);
+				break;
+		}
+	}
 
 	/**
 	 * Checks whether the domain part of the {@code sourceUri} ({@code Origin} or {@code Referer}
@@ -541,8 +546,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				return false;
 			for (String whitelistedOrigin : acceptedOrigins)
 			{
-				if (sourceHost.equalsIgnoreCase(whitelistedOrigin) ||
-					sourceHost.endsWith("." + whitelistedOrigin))
+				if (sourceHost.equalsIgnoreCase(whitelistedOrigin)
+					|| sourceHost.endsWith("." + whitelistedOrigin))
 				{
 					log.trace("Origin {} matched whitelisted origin {}, request accepted",
 						sourceUri, whitelistedOrigin);
@@ -733,8 +738,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void matchingOrigin(HttpServletRequest request, String origin,
-		IRequestablePage page)
+	protected void matchingOrigin(HttpServletRequest request, String origin, IRequestablePage page)
 	{
 		onMatchingOrigin(request, origin, page);
 		if (log.isDebugEnabled())
@@ -772,8 +776,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void allowHandler(HttpServletRequest request, String origin,
-		IRequestablePage page)
+	protected void allowHandler(HttpServletRequest request, String origin, IRequestablePage page)
 	{
 		onAllowed(request, origin, page);
 		log.info("Possible CSRF attack, request URL: {}, Origin: {}, action: allowed",
@@ -808,8 +811,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void suppressHandler(HttpServletRequest request, String origin,
-		IRequestablePage page)
+	protected void suppressHandler(HttpServletRequest request, String origin, IRequestablePage page)
 	{
 		onSuppressed(request, origin, page);
 		log.info("Possible CSRF attack, request URL: {}, Origin: {}, action: suppressed",
@@ -845,8 +847,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void abortHandler(HttpServletRequest request, String origin,
-		IRequestablePage page)
+	protected void abortHandler(HttpServletRequest request, String origin, IRequestablePage page)
 	{
 		onAborted(request, origin, page);
 		log.info(
