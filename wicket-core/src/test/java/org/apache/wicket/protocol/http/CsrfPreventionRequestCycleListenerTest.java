@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.lf5.util.Resource;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.protocol.http.CsrfPreventionRequestCycleListener.CsrfAction;
 import org.apache.wicket.request.IRequestHandler;
@@ -406,6 +407,132 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 		assertConflictingOriginsRequestSuppressed();
 		tester.assertRenderedPage(ThirdPage.class);
 	}
+
+	/** Tests whether a request with Sec-Fetch-Site = cross-site is aborted*/
+	@Test
+	void crossSiteFMAborted()
+	{
+		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
+		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+
+		tester.clickLink("link");
+
+		assertConflictingOriginsRequestAborted();
+	}
+
+	/** Tests whether a request with Sec-Fetch-Site = cross-site is suppressed*/
+	@Test
+	void crossSiteFMSuppressed()
+	{
+		csrfListener.setConflictingOriginAction(CsrfAction.SUPPRESS);
+		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+
+		tester.clickLink("link");
+
+		assertConflictingOriginsRequestSuppressed();
+	}
+
+	/** Tests whether a request with Sec-Fetch-Site = cross-site is allowed*/
+	@Test
+	void crossSiteFMAllowed()
+	{
+		csrfListener.setConflictingOriginAction(CsrfAction.ALLOW);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+
+		tester.clickLink("link");
+
+		assertConflictingOriginsRequestAllowed();
+	}
+
+	/** Tests whether a top level navigation request is allowed by FM checks */
+	@Test
+	void topLevelNavigationAllowedFM()
+	{
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.SAME_ORIGIN);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_MODE_HEADER, ResourceIsolationPolicy.MODE_NAVIGATE);
+
+		tester.clickLink("link");
+		tester.assertRenderedPage(SecondPage.class);
+	}
+
+	/** Tests whether embed requests are aborted by fetch metadata checks*/
+	@Test
+	void destEmbedFMAborted()
+	{
+		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.DEST_EMBED);
+
+		tester.clickLink("link");
+
+		assertConflictingOriginsRequestAborted();
+	}
+
+	/** Tests whether object requests (sec-fetch-dest :"object" ) are aborted by FM checks*/
+	@Test
+	void destObjectAborted()
+	{
+		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.DEST_OBJECT);
+
+		tester.clickLink("link");
+
+		assertConflictingOriginsRequestAborted();
+	}
+
+	/** Tests whether a cross origin request by a white listed origin is allowed*/
+	@Test
+	void crossSiteButWhiteListedAllowed()
+	{
+		csrfListener.addAcceptedOrigin("example.com");
+		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://example.com/");
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+
+		tester.clickLink("link");
+
+		assertOriginsWhitelisted();
+		tester.assertRenderedPage(SecondPage.class);
+	}
+
+	/** Tests whitelisting with conflicting subdomain origin when sec-fetch-site is cross-site. */
+	@Test
+	void crossSiteButWhitelistedSubdomainOriginAllowed()
+	{
+		csrfListener.addAcceptedOrigin("example.com");
+
+		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://foo.example.com/");
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+
+		tester.clickLink("link");
+
+		tester.assertRenderedPage(SecondPage.class);
+		assertOriginsWhitelisted();
+	}
+
+	/**
+	 * Tests when the listener is disabled for a specific page (by overriding
+	 * {@link CsrfPreventionRequestCycleListener#isChecked(IRequestablePage)}) and
+	 * when fetch metadata headers indicate cross-site request
+	 */
+	@Test
+	void crossSitePageNotCheckedAllowed()
+	{
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
+
+		// disable the check for this page
+		checkPage = false;
+
+		tester.clickLink("link");
+
+		assertConflictingOriginsRequestAllowed();
+		tester.assertRenderedPage(SecondPage.class);
+	}
+
+
+
+
 
 	/*
 	 * Infrastructure code for these test cases starts here.
