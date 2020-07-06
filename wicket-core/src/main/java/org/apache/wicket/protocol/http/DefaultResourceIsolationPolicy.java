@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @see <a href="https://web.dev/fetch-metadata/">https://web.dev/fetch-metadata/</a>
  *
- * @author Santiago Diaz
- * @author Ecenaz Jen Ozmen
+ * @author Santiago Diaz - saldiaz@google.com
+ * @author Ecenaz Jen Ozmen - ecenazo@google.com
  */
 public class DefaultResourceIsolationPolicy implements ResourceIsolationPolicy
 {
