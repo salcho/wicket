@@ -368,9 +368,12 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				// check sec-fetch-site header and call the fetch metadata check if present
 				if (hasFetchMetadataHeaders(containerRequest))
 				{
+					// set vary headers to avoid caching responses processed by Fetch Metadata
+					// caching these responses may return 403 responses to legitimate requests
+					// or defeat the protection
 					WebResponse webResponse = (WebResponse)cycle.getResponse();
-					webResponse.setHeader("Vary",
-						"Sec-Fetch-Dest, Sec-Fetch-Site, Sec-Fetch-Mode");
+					webResponse.setHeader(VARY_HEADER, SEC_FETCH_DEST_HEADER + ", "
+						+ SEC_FETCH_SITE_HEADER + ", " + SEC_FETCH_MODE_HEADER);
 					checkRequestFetchMetadata(containerRequest, sourceUri, targetedPage);
 				}
 				else
