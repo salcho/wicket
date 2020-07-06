@@ -122,8 +122,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	/**
 	 * The action to perform when a missing or conflicting source URI is detected.
 	 */
-	public enum CsrfAction
-	{
+	public enum CsrfAction {
 		/** Aborts the request and throws an exception when a CSRF request is detected. */
 		ABORT {
 			@Override
@@ -314,8 +313,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 */
 	protected boolean isChecked(IRequestHandler handler)
 	{
-		return handler instanceof IPageRequestHandler
-			&& !(handler instanceof RenderPageRequestHandler);
+		return handler instanceof IPageRequestHandler &&
+			!(handler instanceof RenderPageRequestHandler);
 	}
 
 	/**
@@ -387,7 +386,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				if (log.isDebugEnabled())
 				{
 					log.debug("Targeted page {} was opted out of the CSRF origin checks, allowed",
-						targetedPage.getClass().getName());
+							targetedPage.getClass().getName());
 				}
 				allowHandler(containerRequest, sourceUri, targetedPage);
 			}
@@ -741,7 +740,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void matchingOrigin(HttpServletRequest request, String origin, IRequestablePage page)
+	protected void matchingOrigin(HttpServletRequest request, String origin,
+		IRequestablePage page)
 	{
 		onMatchingOrigin(request, origin, page);
 		if (log.isDebugEnabled())
@@ -779,7 +779,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void allowHandler(HttpServletRequest request, String origin, IRequestablePage page)
+	protected void allowHandler(HttpServletRequest request, String origin,
+		IRequestablePage page)
 	{
 		onAllowed(request, origin, page);
 		log.info("Possible CSRF attack, request URL: {}, Origin: {}, action: allowed",
@@ -814,7 +815,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void suppressHandler(HttpServletRequest request, String origin, IRequestablePage page)
+	protected void suppressHandler(HttpServletRequest request, String origin,
+		IRequestablePage page)
 	{
 		onSuppressed(request, origin, page);
 		log.info("Possible CSRF attack, request URL: {}, Origin: {}, action: suppressed",
@@ -850,7 +852,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 * @param page
 	 *            the page that is targeted with this request
 	 */
-	protected void abortHandler(HttpServletRequest request, String origin, IRequestablePage page)
+	protected void abortHandler(HttpServletRequest request, String origin,
+		IRequestablePage page)
 	{
 		onAborted(request, origin, page);
 		log.info(
