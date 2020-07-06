@@ -367,13 +367,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				// check sec-fetch-site header and call the fetch metadata check if present
 				if (hasFetchMetadataHeaders(containerRequest))
 				{
-					// set vary headers to avoid caching responses processed by Fetch Metadata
-					// caching these responses may return 403 responses to legitimate requests
-					// or defeat the protection
-					WebResponse webResponse = (WebResponse)cycle.getResponse();
-					webResponse.setHeader(VARY_HEADER, SEC_FETCH_DEST_HEADER + ", "
-						+ SEC_FETCH_SITE_HEADER + ", " + SEC_FETCH_MODE_HEADER);
-					checkRequestFetchMetadata(containerRequest, sourceUri, targetedPage);
+					checkRequestFetchMetadata(containerRequest, sourceUri, targetedPage, cycle);
 				}
 				else
 				{
@@ -489,9 +483,11 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 	 *            the source URI
 	 * @param page
 	 *            the page that is the target of the request
+	 * @param cycle
+	 *            the current request cycle to set vary headers after white list check
 	 */
 	protected void checkRequestFetchMetadata(HttpServletRequest request, String sourceUri,
-		IRequestablePage page)
+		IRequestablePage page, RequestCycle cycle)
 	{
 		// check if sourceUri exists before checking for whitelisted hosts,
 		// if not set sourceUri to no origin for logging purposes
@@ -509,6 +505,20 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				return;
 			}
 		}
+
+		// set vary headers to avoid caching responses processed by Fetch Metadata
+		// caching these responses may return 403 responses to legitimate requests
+		// or defeat the protection
+		if (cycle.getResponse() instanceof WebResponse)
+		{
+			WebResponse webResponse = (WebResponse)cycle.getResponse();
+			if (webResponse.isHeaderSupported())
+			{
+				webResponse.setHeader(VARY_HEADER, SEC_FETCH_DEST_HEADER + ", "
+						+ SEC_FETCH_SITE_HEADER + ", " + SEC_FETCH_MODE_HEADER);
+			}
+		}
+
 		if (fetchMetadataPolicy.isRequestAllowed(request))
 		{
 			matchingOrigin(request, sourceUri, page);
