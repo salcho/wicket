@@ -34,6 +34,8 @@ import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.*;
+
+import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.util.lang.Checks;
 import org.apache.wicket.util.string.Strings;
@@ -365,7 +367,10 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 				//check sec-fetch-site header and call the fetch metadata check if present
 				if (hasFetchMetadataHeaders(containerRequest))
 				{
-				    checkRequestFetchMetadata(containerRequest, sourceUri, targetedPage);
+					WebResponse webResponse = (WebResponse)cycle.getResponse();
+					//TODO: should we define "Vary" as a header in ResourceIsolationPolicy / somewhere else?
+					webResponse.setHeader("Vary", "Sec-Fetch-Dest, Sec-Fetch-Site, Sect-Fetch-Mode");
+					checkRequestFetchMetadata(containerRequest, sourceUri, targetedPage);
 				}
 				else
 				{
@@ -492,7 +497,8 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 		else
 		{
 			// if the origin is a know and trusted origin, don't check any further but allow the request
-			if (isWhitelistedHost(sourceUri)) {
+			if (isWhitelistedHost(sourceUri))
+			{
 				whitelistedHandler(request, sourceUri, page);
 				return;
 			}
