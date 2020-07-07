@@ -19,6 +19,12 @@ package org.apache.wicket.protocol.http;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SEC_FETCH_DEST_HEADER;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SEC_FETCH_MODE_HEADER;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.VARY_HEADER;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.CROSS_SITE;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SAME_ORIGIN;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.MODE_NAVIGATE;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.DEST_EMBED;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.DEST_OBJECT;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -418,7 +424,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
 		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -431,7 +437,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.SUPPRESS);
 		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -443,7 +449,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	void crossSiteFMAllowed()
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ALLOW);
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -454,8 +460,8 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	@Test
 	void topLevelNavigationAllowedFM()
 	{
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.SAME_ORIGIN);
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_MODE_HEADER, ResourceIsolationPolicy.MODE_NAVIGATE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, SAME_ORIGIN);
+		tester.addRequestHeader(SEC_FETCH_MODE_HEADER, MODE_NAVIGATE);
 
 		tester.clickLink("link");
 		tester.assertRenderedPage(SecondPage.class);
@@ -466,7 +472,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	void destEmbedFMAborted()
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.DEST_EMBED);
+		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, DEST_EMBED);
 
 		tester.clickLink("link");
 
@@ -478,7 +484,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	void destObjectAborted()
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.DEST_OBJECT);
+		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, DEST_OBJECT);
 
 		tester.clickLink("link");
 
@@ -491,7 +497,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	{
 		csrfListener.addAcceptedOrigin("example.com");
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://example.com/");
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -507,7 +513,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://foo.example.com/");
 		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -523,8 +529,8 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	@Test
 	void crossSitePageNotCheckedAllowed()
 	{
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER,
-			ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER,
+			CROSS_SITE);
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
 
 		// disable the check for this page
@@ -542,7 +548,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
 		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -569,13 +575,14 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 		csrfListener.addAcceptedOrigin("example.com");
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://example.com/");
 		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
 		assertOriginsWhitelisted();
 		tester.assertRenderedPage(SecondPage.class);
 
-		String vary = tester.getLastResponse().getHeader("Vary");
+		String vary = tester.getLastResponse().getHeader(VARY_HEADER);
 		if (vary == null)
 		{
 			throw new AssertionError("Vary header should not be null");
