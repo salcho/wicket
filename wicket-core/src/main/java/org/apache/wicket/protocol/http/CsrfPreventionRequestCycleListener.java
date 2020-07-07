@@ -394,6 +394,29 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 		}
 	}
 
+	@Override
+	public void onEndRequest(RequestCycle cycle)
+	{
+		// set vary headers to avoid caching responses processed by Fetch Metadata
+		// caching these responses may return 403 responses to legitimate requests
+		// or defeat the protection
+		HttpServletRequest containerRequest = (HttpServletRequest)cycle.getRequest()
+				.getContainerRequest();
+		if (hasFetchMetadataHeaders(containerRequest))
+		{
+			if (cycle.getResponse() instanceof WebResponse)
+			{
+				WebResponse webResponse = (WebResponse)cycle.getResponse();
+				if (webResponse.isHeaderSupported())
+				{
+					webResponse.addHeader(VARY_HEADER, SEC_FETCH_DEST_HEADER + ", "
+						+ SEC_FETCH_SITE_HEADER + ", " + SEC_FETCH_MODE_HEADER);
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * Resolves the source URI from the request headers ({@code Origin} or {@code Referer}).
 	 *
@@ -503,19 +526,6 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 			{
 				whitelistedHandler(request, sourceUri, page);
 				return;
-			}
-		}
-
-		// set vary headers to avoid caching responses processed by Fetch Metadata
-		// caching these responses may return 403 responses to legitimate requests
-		// or defeat the protection
-		if (cycle.getResponse() instanceof WebResponse)
-		{
-			WebResponse webResponse = (WebResponse)cycle.getResponse();
-			if (webResponse.isHeaderSupported())
-			{
-				webResponse.setHeader(VARY_HEADER, SEC_FETCH_DEST_HEADER + ", "
-						+ SEC_FETCH_SITE_HEADER + ", " + SEC_FETCH_MODE_HEADER);
 			}
 		}
 

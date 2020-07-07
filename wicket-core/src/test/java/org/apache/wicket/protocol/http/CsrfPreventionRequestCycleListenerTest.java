@@ -35,6 +35,7 @@ import org.apache.wicket.util.tester.WicketTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 /**
  * Test cases for the CsrfPreventionRequestCycleListener. FirstPage has a link that when clicked
  * should render SecondPage.
@@ -505,6 +506,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 		csrfListener.addAcceptedOrigin("example.com");
 
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://foo.example.com/");
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.CROSS_SITE);
 
 		tester.clickLink("link");
@@ -515,13 +517,14 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 
 	/**
 	 * Tests when the listener is disabled for a specific page (by overriding
-	 * {@link CsrfPreventionRequestCycleListener#isChecked(IRequestablePage)}) and
-	 * when fetch metadata headers indicate cross-site request
+	 * {@link CsrfPreventionRequestCycleListener#isChecked(IRequestablePage)}) and when fetch
+	 * metadata headers indicate cross-site request
 	 */
 	@Test
 	void crossSitePageNotCheckedAllowed()
 	{
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER,
+			ResourceIsolationPolicy.CROSS_SITE);
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
 
 		// disable the check for this page
@@ -535,21 +538,26 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 
 	/** Tests that requests rejected by fetch metadata have the Vary header set */
 	@Test
-	void varyHeaderSetWhenFetchMetadataRejectsRequest() {
+	void varyHeaderSetWhenFetchMetadataRejectsRequest()
+	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
 		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
-		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
 		assertConflictingOriginsRequestAborted();
 
-		String vary = tester.getLastResponse().getHeader("vary");
-		if (vary == null) {
+		String vary = tester.getLastResponse().getHeader("Vary");
+
+		if (vary == null)
+		{
 			throw new AssertionError("Vary header should not be null");
 		}
 
-		if (!vary.contains(SEC_FETCH_DEST_HEADER) || !vary.contains(SEC_FETCH_MODE_HEADER) || !vary.contains(SEC_FETCH_SITE_HEADER)) {
+		if (!vary.contains(SEC_FETCH_DEST_HEADER) || !vary.contains(SEC_FETCH_MODE_HEADER)
+			|| !vary.contains(SEC_FETCH_SITE_HEADER))
+		{
 			throw new AssertionError("Unexpected vary header: " + vary);
 		}
 	}
@@ -560,19 +568,22 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	{
 		csrfListener.addAcceptedOrigin("example.com");
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://example.com/");
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, ResourceIsolationPolicy.CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
 		assertOriginsWhitelisted();
 		tester.assertRenderedPage(SecondPage.class);
 
-		String vary = tester.getLastResponse().getHeader("vary");
-		if (vary == null) {
+		String vary = tester.getLastResponse().getHeader("Vary");
+		if (vary == null)
+		{
 			throw new AssertionError("Vary header should not be null");
 		}
 
-		if (!vary.contains(SEC_FETCH_DEST_HEADER) || !vary.contains(SEC_FETCH_MODE_HEADER) || !vary.contains(SEC_FETCH_SITE_HEADER)) {
+		if (!vary.contains(SEC_FETCH_DEST_HEADER) || !vary.contains(SEC_FETCH_MODE_HEADER)
+			|| !vary.contains(SEC_FETCH_SITE_HEADER))
+		{
 			throw new AssertionError("Unexpected vary header: " + vary);
 		}
 	}
