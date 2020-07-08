@@ -460,7 +460,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	@Test
 	void topLevelNavigationAllowedFM()
 	{
-		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, SAME_ORIGIN);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 		tester.addRequestHeader(SEC_FETCH_MODE_HEADER, MODE_NAVIGATE);
 
 		tester.clickLink("link");
@@ -472,6 +472,8 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	void destEmbedFMAborted()
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
+		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, DEST_EMBED);
 
 		tester.clickLink("link");
@@ -484,6 +486,8 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	void destObjectAborted()
 	{
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
+		csrfListener.setNoOriginAction(CsrfAction.ALLOW);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, DEST_OBJECT);
 
 		tester.clickLink("link");
@@ -497,7 +501,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	{
 		csrfListener.addAcceptedOrigin("example.com");
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://example.com/");
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -513,7 +517,6 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 
 		tester.addRequestHeader(WebRequest.HEADER_ORIGIN, "http://foo.example.com/");
 		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
-		tester.addRequestHeader(SEC_FETCH_DEST_HEADER, CROSS_SITE);
 
 		tester.clickLink("link");
 
@@ -529,8 +532,7 @@ class CsrfPreventionRequestCycleListenerTest extends WicketTestCase
 	@Test
 	void crossSitePageNotCheckedAllowed()
 	{
-		tester.addRequestHeader(SEC_FETCH_SITE_HEADER,
-			CROSS_SITE);
+		tester.addRequestHeader(SEC_FETCH_SITE_HEADER, CROSS_SITE);
 		csrfListener.setConflictingOriginAction(CsrfAction.ABORT);
 
 		// disable the check for this page
