@@ -402,7 +402,6 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 		// or defeat the protection
 		if (cycle.getResponse() instanceof WebResponse)
 		{
-			System.out.println("response is an instanceof WebResponse");
 			WebResponse webResponse = (WebResponse)cycle.getResponse();
 			if (webResponse.isHeaderSupported())
 			{
