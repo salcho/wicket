@@ -25,13 +25,13 @@ import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SAME_ORIGI
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.MODE_NAVIGATE;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.DEST_EMBED;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.DEST_OBJECT;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.lf5.util.Resource;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.protocol.http.CsrfPreventionRequestCycleListener.CsrfAction;
 import org.apache.wicket.request.IRequestHandler;
