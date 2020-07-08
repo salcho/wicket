@@ -21,7 +21,6 @@ import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SEC_FETCH_
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.VARY_HEADER;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.CROSS_SITE;
-import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SAME_ORIGIN;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.MODE_NAVIGATE;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.DEST_EMBED;
 import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.DEST_OBJECT;

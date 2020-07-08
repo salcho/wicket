@@ -39,6 +39,7 @@ public interface ResourceIsolationPolicy
 	String SEC_FETCH_MODE_HEADER = "sec-fetch-mode";
 	String SEC_FETCH_DEST_HEADER = "sec-fetch-dest";
 	String VARY_HEADER = "Vary";
+	String VARY_HEADER_VALUE = "sec-fetch-site, sec-fetch-mode, sec-fetch-dest";
 	String SAME_ORIGIN = "same-origin";
 	String SAME_SITE = "same-site";
 	String NONE = "none";

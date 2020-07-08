@@ -24,6 +24,10 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.VARY_HEADER;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.VARY_HEADER_VALUE;
+import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.SEC_FETCH_SITE_HEADER;
+
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
@@ -33,8 +37,6 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
-import static org.apache.wicket.protocol.http.ResourceIsolationPolicy.*;
-
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.http.flow.AbortWithHttpErrorCodeException;
 import org.apache.wicket.util.lang.Checks;
@@ -405,8 +407,7 @@ public class CsrfPreventionRequestCycleListener implements IRequestCycleListener
 			WebResponse webResponse = (WebResponse)cycle.getResponse();
 			if (webResponse.isHeaderSupported())
 			{
-				webResponse.addHeader(VARY_HEADER, SEC_FETCH_DEST_HEADER + ", "
-					+ SEC_FETCH_SITE_HEADER + ", " + SEC_FETCH_MODE_HEADER);
+				webResponse.addHeader(VARY_HEADER, VARY_HEADER_VALUE);
 			}
 		}
 	}
