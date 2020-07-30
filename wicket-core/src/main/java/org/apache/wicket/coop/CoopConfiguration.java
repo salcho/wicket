@@ -95,9 +95,9 @@ public class CoopConfiguration
 
 	public boolean isExempted(String path)
 	{
-		Optional<String> exemptionMatch = Arrays.stream(exemptions).filter(ex -> ex.equals(path))
-			.findFirst();
-		return exemptionMatch.isPresent();
+		return Arrays.stream(exemptions).filter(ex -> ex.equals(path))
+			.findFirst()
+			.isPresent();
 	}
 
 	public void addCoopHeader(WebResponse resp)
