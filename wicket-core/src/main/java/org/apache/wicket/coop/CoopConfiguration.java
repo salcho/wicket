@@ -24,7 +24,14 @@ import java.util.Optional;
 public class CoopConfiguration
 {
 
-	enum CoopMode
+	enum CoopMode {
+	    UNSAFE_NONE("unsafe-none"),
+	    SAME_SITE("same-site"),
+	    SAME_ORIGIN("same-origin")
+
+	    final String keyword;
+	    CoopMode(String keyword){ this.keyword = keyword; }
+	    
 	{
 		UNSAFE_NONE {
 			@Override
