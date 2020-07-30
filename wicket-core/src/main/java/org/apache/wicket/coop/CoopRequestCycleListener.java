@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package org.apache.wicket.coop;
+
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
@@ -26,10 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CoopRequestCycleListener implements IRequestCycleListener
 {
-    private static final Logger log = LoggerFactory
-            .getLogger(CoopRequestCycleListener.class);
+	private static final Logger log = LoggerFactory.getLogger(CoopRequestCycleListener.class);
 
-    private final CoopConfiguration coopConfig;
+	private final CoopConfiguration coopConfig;
 
 	public CoopRequestCycleListener(CoopConfiguration cooopConfig)
 	{
@@ -45,20 +45,20 @@ public class CoopRequestCycleListener implements IRequestCycleListener
 
 		if (coopConfig.isExempted(path))
 		{
-            if (log.isDebugEnabled())
-            {
-                log.debug("Request path is exempted from COOP, no COOP header added");
-            }
+			if (log.isDebugEnabled())
+			{
+				log.debug("Request path is exempted from COOP, no COOP header added");
+			}
 			return;
 		}
 
-        if (cycle.getResponse() instanceof WebResponse)
-        {
-            WebResponse webResponse = (WebResponse)cycle.getResponse();
-            if (webResponse.isHeaderSupported())
-            {
-                coopConfig.addCoopHeader(webResponse);
-            }
-        }
+		if (cycle.getResponse() instanceof WebResponse)
+		{
+			WebResponse webResponse = (WebResponse)cycle.getResponse();
+			if (webResponse.isHeaderSupported())
+			{
+				coopConfig.addCoopHeader(webResponse);
+			}
+		}
 	}
 }

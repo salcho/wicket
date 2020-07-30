@@ -17,7 +17,7 @@ public class CoopRequestCycleListenerTest extends WicketTestCase {
 	}
 
     @Test
-    public void testCoopHeadersSNotSetExemptedPath()
+    public void testCoopHeadersNotSetExemptedPath()
     {
         tester.getApplication().enableCoop(new CoopConfiguration.Builder()
                 .withMode(CoopMode.SAME_ORIGIN).withExemptions("exempt").build());
