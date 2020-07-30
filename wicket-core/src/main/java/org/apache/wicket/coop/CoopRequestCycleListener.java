@@ -25,6 +25,36 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Sets <a href="https://github.com/whatwg/html/pull/5334/files">Cross-Origin Opener Policy</a>
+ * headers on the responses based on the policy specified by {@link CoopConfiguration}.
+ * The header is not set for the paths that are exempted from COOP.
+ *
+ * COOP is a mitigation against cross-origin information leaks and is used to make
+ * websites cross-origin isolated. Setting the COOP header allows you to ensure that a top-level
+ * window is isolated from other documents by putting them in a different browsing context group,
+ * so they cannot directly interact with the top-level window. Read more about cross-origin isolation on
+ * <a href="https://web.dev/why-coop-coep/">https://web.dev/why-coop-coep/</a>
+ *
+ * You can enable this CSRF prevention filter by adding it to the request cycle listeners in your
+ * {@link org.apache.wicket.protocol.http.WebApplication#init() application's init method}:
+ *
+ * <pre>
+ * &#064;Override
+ * protected void init()
+ * {
+ * 	// ...
+ * 	enableCoop(new CoopConfiguration.Builder()
+ * 			.withMode(CoopMode.SAME_ORIGIN).withExemptions("EXEMPTED PATHS").build());
+ * 	// ...
+ * }
+ * </pre>
+ *
+ * @author Santiago Diaz - saldiaz@google.com
+ * @author Ecenaz Jen Ozmen - ecenazo@google.com
+ *
+ * @see CoopConfiguration
+ */
 public class CoopRequestCycleListener implements IRequestCycleListener
 {
 	private static final Logger log = LoggerFactory.getLogger(CoopRequestCycleListener.class);
@@ -36,7 +66,7 @@ public class CoopRequestCycleListener implements IRequestCycleListener
 		this.coopConfig = cooopConfig;
 	}
 
-	// TODO: should we implement onEndRequest instead? ie. will we need to use the handler?
+
 	@Override
 	public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler)
 	{

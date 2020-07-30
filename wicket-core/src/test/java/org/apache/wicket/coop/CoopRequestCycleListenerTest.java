@@ -40,7 +40,7 @@ public class CoopRequestCycleListenerTest extends WicketTestCase {
             throw new AssertionError("COOP header should not be null");
         }
 
-        if (!mode.toString().equals(coopHeaderValue))
+        if (!mode.keyword.equals(coopHeaderValue))
         {
             throw new AssertionError("Unexpected COOP header: " + coopHeaderValue);
         }

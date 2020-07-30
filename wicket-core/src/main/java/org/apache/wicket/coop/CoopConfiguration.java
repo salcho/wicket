@@ -16,45 +16,46 @@
  */
 package org.apache.wicket.coop;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.http.WebResponse;
 
 import java.util.Arrays;
-import java.util.Optional;
 
+/**
+ * Specifies the configuration for Cross-Origin Opener Policy to be used for {@link CoopRequestCycleListener}.
+ * Users can specify the paths that should be exempt from COOP and one of 3 modes
+ * (<code>UNSAFE_NONE, SAME_SITE, SAME_ORIGIN</code>) for the policy.
+ *
+ * You can enable this CSRF prevention filter by adding it to the request cycle listeners in your
+ * {@link org.apache.wicket.protocol.http.WebApplication#init() application's init method}:
+ *
+ * <pre>
+ * &#064;Override
+ * protected void init()
+ * {
+ * 	// ...
+ * 	enableCoop(new CoopConfiguration.Builder()
+ * 			.withMode(CoopMode.SAME_ORIGIN).withExemptions("EXEMPTED PATHS").build());
+ * 	// ...
+ * }
+ * </pre>
+ *
+ * @author Santiago Diaz - saldiaz@google.com
+ * @author Ecenaz Jen Ozmen - ecenazo@google.com
+ *
+ * @see CoopRequestCycleListener
+ */
 public class CoopConfiguration
 {
-
 	enum CoopMode {
-	    UNSAFE_NONE("unsafe-none"),
-	    SAME_SITE("same-site"),
-	    SAME_ORIGIN("same-origin")
+		UNSAFE_NONE("unsafe-none"),
+		SAME_SITE("same-site"),
+		SAME_ORIGIN("same-origin");
 
-	    final String keyword;
-	    CoopMode(String keyword){ this.keyword = keyword; }
-	    
-	{
-		UNSAFE_NONE {
-			@Override
-			public String toString()
-			{
-				return "unsafe-none";
-			}
-		},
+		final String keyword;
 
-		SAME_SITE {
-			@Override
-			public String toString()
-			{
-				return "same-site";
-			}
-		},
-
-		SAME_ORIGIN {
-			@Override
-			public String toString()
-			{
-				return "same-origin";
-			}
+		CoopMode(String keyword) {
+			this.keyword = keyword;
 		}
 	}
 
@@ -95,13 +96,11 @@ public class CoopConfiguration
 
 	public boolean isExempted(String path)
 	{
-		return Arrays.stream(exemptions).filter(ex -> ex.equals(path))
-			.findFirst()
-			.isPresent();
+		return Arrays.stream(exemptions).anyMatch(ex -> ex.equals(path));
 	}
 
 	public void addCoopHeader(WebResponse resp)
 	{
-		resp.setHeader(COOP_HEADER, mode.toString());
+		resp.setHeader(COOP_HEADER, mode.keyword);
 	}
 }
