@@ -37,6 +37,8 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestHandler;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxRequestTargetListenerCollection;
+import org.apache.wicket.coop.CoopConfiguration;
+import org.apache.wicket.coop.CoopRequestCycleListener;
 import org.apache.wicket.core.request.mapper.IMapperContext;
 import org.apache.wicket.core.request.mapper.MountedMapper;
 import org.apache.wicket.core.request.mapper.PackageMapper;
@@ -1110,5 +1112,10 @@ public abstract class WebApplication extends Application
 			cspSettings = newCspSettings();
 		}
 		return cspSettings;
+	}
+
+	public void enableCoop(CoopConfiguration coopConfig)
+	{
+		getRequestCycleListeners().add(new CoopRequestCycleListener(coopConfig));
 	}
 }
