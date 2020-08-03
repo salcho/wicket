@@ -16,7 +16,6 @@
  */
 package org.apache.wicket.coop;
 
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.http.WebResponse;
 
 import java.util.Arrays;
