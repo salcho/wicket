@@ -17,7 +17,7 @@ import java.util.Arrays;
  * protected void init()
  * {
  * 	// ...
- * 	enableCoop(new CoepConfiguration.Builder().withMode(CoepMode.ENFORCING)
+ * 	enableCoep(new CoepConfiguration.Builder().withMode(CoepMode.ENFORCING)
  * 		.withExemptions("EXEMPTED PATHS").build());
  * 	// ...
  * }
