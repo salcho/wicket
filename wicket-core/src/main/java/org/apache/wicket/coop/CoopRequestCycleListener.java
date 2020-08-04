@@ -33,10 +33,13 @@ import javax.servlet.http.HttpServletRequest;
  * COOP is a mitigation against cross-origin information leaks and is used to make
  * websites cross-origin isolated. Setting the COOP header allows you to ensure that a top-level
  * window is isolated from other documents by putting them in a different browsing context group,
- * so they cannot directly interact with the top-level window. Read more about cross-origin isolation on
+ * so they cannot directly interact with the top-level window. Using COEP and COOP together allows developers to safely use
+ *  * powerful features such as <code>SharedArrayBuffer</code>, <code>performance.measureMemory()</code>,
+ *  * and the JS Self-Profiling API.See {@link org.apache.wicket.coep.CoepRequestCycleListener} for instructions
+ *  * on how to enable COOP. Read more about cross-origin isolation on
  * <a href="https://web.dev/why-coop-coep/">https://web.dev/why-coop-coep/</a>
  *
- * You can enable this CSRF prevention filter by adding it to the request cycle listeners in your
+ * You can enable COOP headers by adding it to the request cycle listeners in your
  * {@link org.apache.wicket.protocol.http.WebApplication#init() application's init method}:
  *
  * <pre>

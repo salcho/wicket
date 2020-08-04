@@ -25,7 +25,7 @@ import java.util.Arrays;
  * Users can specify the paths that should be exempt from COOP and one of 3 modes
  * (<code>UNSAFE_NONE, SAME_SITE, SAME_ORIGIN</code>) for the policy.
  *
- * You can enable this CSRF prevention filter by adding it to the request cycle listeners in your
+ * You can enable COOP headers by adding it to the request cycle listeners in your
  * {@link org.apache.wicket.protocol.http.WebApplication#init() application's init method}:
  *
  * <pre>
