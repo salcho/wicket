@@ -46,7 +46,8 @@ import java.util.Arrays;
  */
 public class CoopConfiguration
 {
-	enum CoopMode {
+	public enum CoopMode
+	{
 		UNSAFE_NONE("unsafe-none"),
 		SAME_ORIGIN("same-origin"),
 		SAME_ORIGIN_ALLOW_POPUPS("same-origin-allow-popups");
@@ -72,22 +73,23 @@ public class CoopConfiguration
 
 	public static class Builder
 	{
-		private String[] exemptions;
-		private CoopMode mode;
+		// provide default values
+		private String[] exemptions = {};
+		private CoopMode mode = CoopMode.SAME_ORIGIN;
 
-		Builder withExemptions(String... exemptions)
+		public Builder withExemptions(String... exemptions)
 		{
 			this.exemptions = exemptions;
 			return this;
 		}
 
-		Builder withMode(CoopMode mode)
+		public Builder withMode(CoopMode mode)
 		{
 			this.mode = mode;
 			return this;
 		}
 
-		CoopConfiguration build()
+		public CoopConfiguration build()
 		{
 			return new CoopConfiguration(exemptions, mode);
 		}
