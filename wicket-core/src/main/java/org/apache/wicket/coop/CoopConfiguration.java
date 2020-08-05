@@ -23,7 +23,7 @@ import java.util.Arrays;
 /**
  * Specifies the configuration for Cross-Origin Opener Policy to be used for {@link CoopRequestCycleListener}.
  * Users can specify the paths that should be exempt from COOP and one of 3 modes
- * (<code>UNSAFE_NONE, SAME_SITE, SAME_ORIGIN</code>) for the policy.
+ * (<code>UNSAFE_NONE, SAME_ORIGIN, SAME_ORIGIN_ALLOW_POPUPS</code>) for the policy.
  *
  * You can enable COOP headers by adding it to the request cycle listeners in your
  * {@link org.apache.wicket.protocol.http.WebApplication#init() application's init method}:
@@ -48,8 +48,8 @@ public class CoopConfiguration
 {
 	enum CoopMode {
 		UNSAFE_NONE("unsafe-none"),
-		SAME_SITE("same-site"),
-		SAME_ORIGIN("same-origin");
+		SAME_ORIGIN("same-origin"),
+		SAME_ORIGIN_ALLOW_POPUPS("same-origin-allow-popups");
 
 		final String keyword;
 
