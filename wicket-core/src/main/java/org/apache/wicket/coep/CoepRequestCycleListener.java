@@ -72,27 +72,27 @@ public class CoepRequestCycleListener implements IRequestCycleListener
 	}
 
     @Override
-    public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler)
-    {
-        HttpServletRequest request = (HttpServletRequest)cycle.getRequest().getContainerRequest();
-        String path = request.getContextPath();
+	public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler)
+	{
+		HttpServletRequest request = (HttpServletRequest)cycle.getRequest().getContainerRequest();
+		String path = request.getContextPath();
 
-        if (coepConfig.isExempted(path))
-        {
-            if (log.isDebugEnabled())
-            {
-                log.debug("Request path is exempted from COOP, no COOP header added");
-            }
-            return;
-        }
+		if (coepConfig.isExempted(path))
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("Request path is exempted from COOP, no COOP header added");
+			}
+			return;
+		}
 
-        if (cycle.getResponse() instanceof WebResponse)
-        {
-            WebResponse webResponse = (WebResponse)cycle.getResponse();
-            if (webResponse.isHeaderSupported())
-            {
-                coepConfig.addCoepHeader(webResponse);
-            }
-        }
-    }
+		if (cycle.getResponse() instanceof WebResponse)
+		{
+			WebResponse webResponse = (WebResponse)cycle.getResponse();
+			if (webResponse.isHeaderSupported())
+			{
+				coepConfig.addCoepHeader(webResponse);
+			}
+		}
+	}
 }

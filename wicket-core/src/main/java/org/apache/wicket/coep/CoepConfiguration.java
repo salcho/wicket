@@ -21,6 +21,7 @@ import org.apache.wicket.request.http.WebResponse;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Specifies the configuration for Cross-Origin Embedder Policy to be used for
@@ -50,8 +51,8 @@ public class CoepConfiguration
 {
 	public enum CoepMode
 	{
-		ENFORCING("Cross-Origin-Embedder-Policy"), REPORTING(
-			"Cross-Origin-Embedder-Policy-Report-Only");
+		ENFORCING("Cross-Origin-Embedder-Policy"),
+		REPORTING("Cross-Origin-Embedder-Policy-Report-Only");
 
 		final String header;
 
@@ -63,10 +64,10 @@ public class CoepConfiguration
 
 	static final String REQUIRE_CORP = "require-corp";
 
-	private final HashSet<String> exemptions;
+	private final Set<String> exemptions;
 	private final CoepMode mode;
 
-	private CoepConfiguration(HashSet<String> exemptions, CoepMode mode)
+	private CoepConfiguration(Set<String> exemptions, CoepMode mode)
 	{
 		this.exemptions = exemptions;
 		this.mode = mode;
@@ -75,7 +76,7 @@ public class CoepConfiguration
 	public static class Builder
 	{
 		// default values - to avoid NullPointerExceptions when a build method isn't used
-		private HashSet<String> exemptions = new HashSet<>();
+		private Set<String> exemptions = new HashSet<>();
 		private CoepMode mode = CoepMode.REPORTING;
 
 		public Builder withExemptions(String... exemptions)

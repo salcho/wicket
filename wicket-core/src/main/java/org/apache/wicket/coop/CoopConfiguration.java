@@ -20,6 +20,7 @@ import org.apache.wicket.request.http.WebResponse;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Specifies the configuration for Cross-Origin Opener Policy to be used for {@link CoopRequestCycleListener}.
@@ -62,11 +63,11 @@ public class CoopConfiguration
 
 	static String COOP_HEADER = "Cross-Origin-Opener-Policy";
 
-	private final HashSet<String> exemptions;
+	private final Set<String> exemptions;
 	private final CoopMode mode;
 
 
-	private CoopConfiguration(HashSet<String> exemptions, CoopMode mode)
+	private CoopConfiguration(Set<String> exemptions, CoopMode mode)
 	{
 		this.exemptions = exemptions;
 		this.mode = mode;
@@ -75,7 +76,7 @@ public class CoopConfiguration
 	public static class Builder
 	{
 		// provide default values
-		private HashSet<String> exemptions = new HashSet<>();
+		private Set<String> exemptions = new HashSet<>();
 		private CoopMode mode = CoopMode.SAME_ORIGIN;
 
 		public Builder withExemptions(String... exemptions)
