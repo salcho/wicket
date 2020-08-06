@@ -16,9 +16,11 @@
  */
 package org.apache.wicket.coep;
 
+import org.apache.wicket.coop.CoopConfiguration;
 import org.apache.wicket.request.http.WebResponse;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * Specifies the configuration for Cross-Origin Embedder Policy to be used for
@@ -61,10 +63,10 @@ public class CoepConfiguration
 
 	static final String REQUIRE_CORP = "require-corp";
 
-	private final String[] exemptions;
+	private final HashSet<String> exemptions;
 	private final CoepMode mode;
 
-	private CoepConfiguration(String[] exemptions, CoepMode mode)
+	private CoepConfiguration(HashSet<String> exemptions, CoepMode mode)
 	{
 		this.exemptions = exemptions;
 		this.mode = mode;
@@ -73,12 +75,12 @@ public class CoepConfiguration
 	public static class Builder
 	{
 		// default values - to avoid NullPointerExceptions when a build method isn't used
-		private String[] exemptions = {};
+		private HashSet<String> exemptions = new HashSet<>();
 		private CoepMode mode = CoepMode.REPORTING;
 
 		public Builder withExemptions(String... exemptions)
 		{
-			this.exemptions = exemptions;
+			this.exemptions.addAll(Arrays.asList(exemptions));
 			return this;
 		}
 
@@ -96,7 +98,7 @@ public class CoepConfiguration
 
 	public boolean isExempted(String path)
 	{
-		return Arrays.stream(exemptions).anyMatch(ex -> ex.equals(path));
+		return exemptions.contains(path);
 	}
 
 	public void addCoepHeader(WebResponse resp)
