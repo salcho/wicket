@@ -27,16 +27,17 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Sets <a href="https://github.com/whatwg/html/pull/5334/files">Cross-Origin Opener Policy</a>
- * headers on the responses based on the policy specified by {@link CoopConfiguration}.
- * The header is not set for the paths that are exempted from COOP.
+ * headers on the responses based on the policy specified by {@link CoopConfiguration}. The header
+ * is not set for the paths that are exempted from COOP.
  *
- * COOP is a mitigation against cross-origin information leaks and is used to make
- * websites cross-origin isolated. Setting the COOP header allows you to ensure that a top-level
- * window is isolated from other documents by putting them in a different browsing context group,
- * so they cannot directly interact with the top-level window. Using COEP and COOP together allows developers to safely use
- *  * powerful features such as <code>SharedArrayBuffer</code>, <code>performance.measureMemory()</code>,
- *  * and the JS Self-Profiling API.See {@link org.apache.wicket.coep.CoepRequestCycleListener} for instructions
- *  * on how to enable COOP. Read more about cross-origin isolation on
+ * COOP is a mitigation against cross-origin information leaks and is used to make websites
+ * cross-origin isolated. Setting the COOP header allows you to ensure that a top-level window is
+ * isolated from other documents by putting them in a different browsing context group, so they
+ * cannot directly interact with the top-level window. Using COEP and COOP together allows
+ * developers to safely use * powerful features such as <code>SharedArrayBuffer</code>,
+ * <code>performance.measureMemory()</code>, * and the JS Self-Profiling API.See
+ * {@link org.apache.wicket.coep.CoepRequestCycleListener} for instructions * on how to enable COOP.
+ * Read more about cross-origin isolation on
  * <a href="https://web.dev/why-coop-coep/">https://web.dev/why-coop-coep/</a>
  *
  * You can enable COOP headers by adding it to the request cycle listeners in your
@@ -47,8 +48,8 @@ import javax.servlet.http.HttpServletRequest;
  * protected void init()
  * {
  * 	// ...
- * 	enableCoop(new CoopConfiguration.Builder()
- * 			.withMode(CoopMode.SAME_ORIGIN).withExemptions("EXEMPTED PATHS").build());
+ * 	enableCoop(new CoopConfiguration.Builder().withMode(CoopMode.SAME_ORIGIN)
+ * 		.withExemptions("EXEMPTED PATHS").build());
  * 	// ...
  * }
  * </pre>
@@ -78,10 +79,9 @@ public class CoopRequestCycleListener implements IRequestCycleListener
 
 		if (coopConfig.isExempted(path))
 		{
-			if (log.isDebugEnabled())
-			{
-				log.debug("Request path is exempted from COOP, no COOP header added");
-			}
+
+			log.debug("Request path is exempted from COOP, no COOP header added");
+
 			return;
 		}
 

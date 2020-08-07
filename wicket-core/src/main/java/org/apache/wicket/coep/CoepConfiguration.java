@@ -51,8 +51,8 @@ public class CoepConfiguration
 {
 	public enum CoepMode
 	{
-		ENFORCING("Cross-Origin-Embedder-Policy"),
-		REPORTING("Cross-Origin-Embedder-Policy-Report-Only");
+		ENFORCING("Cross-Origin-Embedder-Policy"), REPORTING(
+			"Cross-Origin-Embedder-Policy-Report-Only");
 
 		final String header;
 

@@ -1121,7 +1121,8 @@ public abstract class WebApplication extends Application
 		getRequestCycleListeners().add(new CoopRequestCycleListener(coopConfig));
 	}
 
-	public void enableCoep(CoepConfiguration coepConfiguration){
+	public void enableCoep(CoepConfiguration coepConfiguration)
+	{
 		getRequestCycleListeners().add(new CoepRequestCycleListener(coepConfiguration));
 	}
 }

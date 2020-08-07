@@ -26,19 +26,20 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Sets <a href="https://wicg.github.io/cross-origin-embedder-policy/">Cross-Origin Embedder Policy</a>
- * headers on the responses based on the mode specified by {@link CoepConfiguration}.
+ * Sets <a href="https://wicg.github.io/cross-origin-embedder-policy/">Cross-Origin Embedder
+ * Policy</a> headers on the responses based on the mode specified by {@link CoepConfiguration}.
  * COEP can be enabled in <code>REPORTING</code> mode which will set the headers as
- * <code>Cross-Origin-Embedder-Policy-Report-Only</code> or <code>ENFORCING</code> mode
- * which will set the header as <code>Cross-Origin-Embedder-Policy</code>.
- * The header is not set for the paths that are exempted from COEP. The only valid value of COEP is
- * <code>require-corp</code>, so if the listener is enabled the policy value will be specified as so.
+ * <code>Cross-Origin-Embedder-Policy-Report-Only</code> or <code>ENFORCING</code> mode which will
+ * set the header as <code>Cross-Origin-Embedder-Policy</code>. The header is not set for the paths
+ * that are exempted from COEP. The only valid value of COEP is <code>require-corp</code>, so if the
+ * listener is enabled the policy value will be specified as so.
  *
- * COEP  prevents a document from loading any non-same-origin resources which don't explicitly grant
- * the document permission to be loaded. Using COEP and COOP together allows developers to safely use
- * powerful features such as <code>SharedArrayBuffer</code>, <code>performance.measureMemory()</code>,
- * and the JS Self-Profiling API.See {@link org.apache.wicket.coop.CoopRequestCycleListener} for instructions
- * on how to enable COOP. Read more about cross-origin isolation on
+ * COEP prevents a document from loading any non-same-origin resources which don't explicitly grant
+ * the document permission to be loaded. Using COEP and COOP together allows developers to safely
+ * use powerful features such as <code>SharedArrayBuffer</code>,
+ * <code>performance.measureMemory()</code>, and the JS Self-Profiling API.See
+ * {@link org.apache.wicket.coop.CoopRequestCycleListener} for instructions on how to enable COOP.
+ * Read more about cross-origin isolation on
  * <a href="https://web.dev/why-coop-coep/">https://web.dev/why-coop-coep/</a>
  *
  * You can enable COEP headers by adding it to the request cycle listeners in your
@@ -49,8 +50,8 @@ import javax.servlet.http.HttpServletRequest;
  * protected void init()
  * {
  * 	// ...
- * 	enableCoep(new CoepConfiguration.Builder()
- * 			.withMode(CoepMode.ENFORCING).withExemptions("EXEMPTED PATHS").build());
+ * 	enableCoep(new CoepConfiguration.Builder().withMode(CoepMode.ENFORCING)
+ * 		.withExemptions("EXEMPTED PATHS").build());
  * 	// ...
  * }
  * </pre>
@@ -71,7 +72,7 @@ public class CoepRequestCycleListener implements IRequestCycleListener
 		this.coepConfig = coepConfig;
 	}
 
-    @Override
+	@Override
 	public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler)
 	{
 		HttpServletRequest request = (HttpServletRequest)cycle.getRequest().getContainerRequest();
@@ -79,10 +80,7 @@ public class CoepRequestCycleListener implements IRequestCycleListener
 
 		if (coepConfig.isExempted(path))
 		{
-			if (log.isDebugEnabled())
-			{
-				log.debug("Request path is exempted from COOP, no COOP header added");
-			}
+			log.debug("Request path is exempted from COOP, no COOP header added");
 			return;
 		}
 
