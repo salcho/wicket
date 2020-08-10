@@ -79,9 +79,7 @@ public class CoopRequestCycleListener implements IRequestCycleListener
 
 		if (coopConfig.isExempted(path))
 		{
-
-			log.debug("Request path is exempted from COOP, no COOP header added");
-
+			log.debug("Request path {} is exempted from COOP, no COOP header added", path);
 			return;
 		}
 

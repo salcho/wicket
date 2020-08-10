@@ -19,6 +19,8 @@ package org.apache.wicket.coep;
 import org.apache.wicket.util.tester.WicketTestCase;
 import org.junit.jupiter.api.Test;
 
+import org.apache.wicket.coep.CoepConfiguration.CoepMode;
+
 import static org.apache.wicket.coep.CoepConfiguration.REQUIRE_CORP;
 
 public class CoepRequestCycleListenerTest extends WicketTestCase
@@ -28,7 +30,7 @@ public class CoepRequestCycleListenerTest extends WicketTestCase
 	{
 		tester.getApplication().enableCoep(new CoepConfiguration.Builder()
 			.withMode(CoepConfiguration.CoepMode.ENFORCING).withExemptions("exempt").build());
-		checkHeaders("/", CoepConfiguration.CoepMode.ENFORCING);
+		checkHeaders(CoepConfiguration.CoepMode.ENFORCING);
 	}
 
 	@Test
@@ -36,7 +38,7 @@ public class CoepRequestCycleListenerTest extends WicketTestCase
 	{
 		tester.getApplication().enableCoep(new CoepConfiguration.Builder()
 			.withMode(CoepConfiguration.CoepMode.REPORTING).withExemptions("exempt").build());
-		checkHeaders("/", CoepConfiguration.CoepMode.REPORTING);
+		checkHeaders(CoepConfiguration.CoepMode.REPORTING);
 	}
 
 	@Test
@@ -54,9 +56,9 @@ public class CoepRequestCycleListenerTest extends WicketTestCase
 		}
 	}
 
-	private void checkHeaders(String url, CoepConfiguration.CoepMode mode)
+	private void checkHeaders(CoepMode mode)
 	{
-		tester.executeUrl(url);
+		tester.executeUrl("/");
 		String coepHeaderValue = tester.getLastResponse().getHeader(mode.header);
 
 		if (coepHeaderValue == null)

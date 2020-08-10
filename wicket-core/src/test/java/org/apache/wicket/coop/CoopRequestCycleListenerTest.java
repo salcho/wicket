@@ -26,11 +26,27 @@ public class CoopRequestCycleListenerTest extends WicketTestCase
 {
 
 	@Test
-	public void testCoopHeadersSetCorrectly()
+	public void testCoopHeaderSameOrigin()
 	{
 		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
 			.withMode(CoopMode.SAME_ORIGIN).withExemptions("exempt").build());
-		checkHeaders("/", CoopMode.SAME_ORIGIN);
+		checkHeaders(CoopMode.SAME_ORIGIN);
+	}
+
+	@Test
+	public void testCoopHeaderSameOriginAllowPopups()
+	{
+		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
+				.withMode(CoopMode.SAME_ORIGIN_ALLOW_POPUPS).withExemptions("exempt").build());
+		checkHeaders(CoopMode.SAME_ORIGIN_ALLOW_POPUPS);
+	}
+
+	@Test
+	public void testCoopHeaderUnsafeNone()
+	{
+		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
+				.withMode(CoopMode.UNSAFE_NONE).withExemptions("exempt").build());
+		checkHeaders(CoopMode.UNSAFE_NONE);
 	}
 
 	@Test
@@ -47,9 +63,9 @@ public class CoopRequestCycleListenerTest extends WicketTestCase
 		}
 	}
 
-	private void checkHeaders(String url, CoopMode mode)
+	private void checkHeaders( CoopMode mode)
 	{
-		tester.executeUrl(url);
+		tester.executeUrl("/");
 		String coopHeaderValue = tester.getLastResponse().getHeader(COOP_HEADER);
 
 		if (coopHeaderValue == null)
