@@ -16,7 +16,6 @@
  */
 package org.apache.wicket.coep;
 
-import org.apache.wicket.coop.CoopConfiguration;
 import org.apache.wicket.request.http.WebResponse;
 
 import java.util.Arrays;
@@ -51,8 +50,8 @@ public class CoepConfiguration
 {
 	public enum CoepMode
 	{
-		ENFORCING("Cross-Origin-Embedder-Policy"), REPORTING(
-			"Cross-Origin-Embedder-Policy-Report-Only");
+		ENFORCING("Cross-Origin-Embedder-Policy"),
+		REPORTING("Cross-Origin-Embedder-Policy-Report-Only");
 
 		final String header;
 
