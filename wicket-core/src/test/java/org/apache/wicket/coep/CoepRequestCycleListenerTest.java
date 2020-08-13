@@ -16,6 +16,9 @@
  */
 package org.apache.wicket.coep;
 
+import org.apache.wicket.ThreadContext;
+import org.apache.wicket.mock.MockApplication;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.tester.WicketTestCase;
 import org.junit.jupiter.api.Test;
 
@@ -25,36 +28,45 @@ import static org.apache.wicket.coep.CoepRequestCycleListener.REQUIRE_CORP;
 
 public class CoepRequestCycleListenerTest extends WicketTestCase
 {
+	private CoepMode mode;
+	private String exemptions;
+
 	@Test
 	public void testEnforcingCoepHeadersSetCorrectly()
 	{
-		tester.getApplication()
-				.getSecuritySettings()
-				.setCrossOriginEmbedderPolicyConfiguration(
-				new CrossOriginEmbedderPolicyConfiguration(CoepMode.ENFORCING));
+		mode = CoepMode.ENFORCING;
+		buildApp();
 		checkHeaders(CoepMode.ENFORCING);
 	}
 
 	@Test
 	public void testReportingCoepHeadersSetCorrectly()
 	{
-		tester.getApplication().
-				getSecuritySettings().
-				setCrossOriginEmbedderPolicyConfiguration(
-				new CrossOriginEmbedderPolicyConfiguration(CoepMode.REPORTING));
+		mode = CoepMode.REPORTING;
+		buildApp();
 		checkHeaders(CoepMode.REPORTING);
+	}
+
+	@Test
+	public void testCoepDisabled()
+	{
+		mode = CoepMode.DISABLED;
+		buildApp();
+		tester.executeUrl("exempt");
+		String coepHeaderValue = tester.getLastResponse().getHeader(CoepMode.REPORTING.header);
+		if (coepHeaderValue != null)
+		{
+			throw new AssertionError("COOP header should be null on DISABLED");
+		}
 	}
 
 	@Test
 	public void testCoepHeadersNotSetExemptedPath()
 	{
-		tester.getApplication().
-				getSecuritySettings().
-				setCrossOriginEmbedderPolicyConfiguration(
-				new CrossOriginEmbedderPolicyConfiguration(CoepMode.REPORTING).addExemptedPath("exempt"));
+		exemptions = "exempt";
+		buildApp();
 		tester.executeUrl("exempt");
-		String coepHeaderValue = tester.getLastResponse()
-			.getHeader(CoepMode.REPORTING.header);
+		String coepHeaderValue = tester.getLastResponse().getHeader(CoepMode.REPORTING.header);
 
 		if (coepHeaderValue != null)
 		{
@@ -76,5 +88,34 @@ public class CoepRequestCycleListenerTest extends WicketTestCase
 		{
 			throw new AssertionError("Unexpected COEP header: " + coepHeaderValue);
 		}
+	}
+
+	@Override
+	protected WebApplication newApplication()
+	{
+		return new MockApplication()
+		{
+			@Override
+			protected void init()
+			{
+				super.init();
+				getSecuritySettings().setCrossOriginEmbedderPolicyConfiguration(mode, exemptions);
+			}
+		};
+	}
+
+	// overriding the commonBefore because we want to modify init behavior
+	// contents of commonBefore moved to buildApp, called after the coepMode / exemption set in every test
+	@Override
+	public void commonBefore()
+	{
+	}
+
+	private void buildApp()
+	{
+		ThreadContext.detach();
+
+		WebApplication application = newApplication();
+		tester = newWicketTester(application);
 	}
 }

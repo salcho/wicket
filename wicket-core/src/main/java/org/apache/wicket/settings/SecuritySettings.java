@@ -62,7 +62,7 @@ public class SecuritySettings
 
 	/** factory for creating crypt objects */
 	private ICryptFactory cryptFactory;
-	
+
 	/** supplier of random data and SecureRandom */
 	private ISecureRandomSupplier randomSupplier = new DefaultSecureRandomSupplier();
 
@@ -77,12 +77,14 @@ public class SecuritySettings
 	/**
 	 * Represents the configuration for Cross-Origin-Opener-Policy headers
 	 */
-	private CrossOriginOpenerPolicyConfiguration crossOriginOpenerPolicyConfiguration = new CrossOriginOpenerPolicyConfiguration(CoopMode.SAME_ORIGIN);
+	private CrossOriginOpenerPolicyConfiguration crossOriginOpenerPolicyConfiguration = new CrossOriginOpenerPolicyConfiguration(
+		CoopMode.SAME_ORIGIN);
 
 	/**
 	 * Represents the configuration for Cross-Origin-Embedder-Policy headers
 	 */
-	private CrossOriginEmbedderPolicyConfiguration crossOriginEmbedderPolicyConfiguration = new CrossOriginEmbedderPolicyConfiguration(CoepMode.REPORTING);
+	private CrossOriginEmbedderPolicyConfiguration crossOriginEmbedderPolicyConfiguration = new CrossOriginEmbedderPolicyConfiguration(
+		CoepMode.REPORTING);
 
 	/** Authorizer for component instantiations */
 	private static final IUnauthorizedComponentInstantiationListener DEFAULT_UNAUTHORIZED_COMPONENT_INSTANTIATION_LISTENER = new IUnauthorizedComponentInstantiationListener()
@@ -296,22 +298,46 @@ public class SecuritySettings
 		return crossOriginOpenerPolicyConfiguration;
 	}
 
+	/**
+	 * Sets the Cross-Origin Opener Policy's mode and exempted paths. The config values are only
+	 * read once at startup in Application#initApplication(), changing the config at runtime will have no effect
+	 *
+	 * @param mode
+	 *            CoopMode, one of the 4 values: UNSAFE_NONE, SAME_ORIGIN, SAME_ORIGIN_ALLOW_POPUPS, DISABLED
+	 * @param exemptions
+	 *            exempted paths for which COOP will be disabled
+	 * @return
+	 */
 	public SecuritySettings setCrossOriginOpenerPolicyConfiguration(
-		CrossOriginOpenerPolicyConfiguration crossOriginOpenerPolicyConfiguration)
+		CoopMode mode, String... exemptions)
 	{
-		this.crossOriginOpenerPolicyConfiguration = crossOriginOpenerPolicyConfiguration;
+		crossOriginOpenerPolicyConfiguration = new CrossOriginOpenerPolicyConfiguration(mode, exemptions);
 		return this;
 	}
+
 
 	public CrossOriginEmbedderPolicyConfiguration getCrossOriginEmbedderPolicyConfiguration()
 	{
 		return crossOriginEmbedderPolicyConfiguration;
 	}
 
-	public SecuritySettings setCrossOriginEmbedderPolicyConfiguration(
-		CrossOriginEmbedderPolicyConfiguration crossOriginEmbedderPolicyConfiguration)
+	/**
+	 * Sets the Cross-Origin Embedder Policy's mode and exempted paths. The config values are only
+	 * read once at startup in Application#initApplication(), changing the config at runtime will
+	 * have no effect
+	 * 
+	 * @param mode
+	 *            CoepMode, one of the 3 values: ENFORCING, REPORTING, DISABLED
+	 * @param exemptions
+	 *            exempted paths for which COEP will be disabled
+	 * @return
+	 */
+	public SecuritySettings setCrossOriginEmbedderPolicyConfiguration(CoepMode mode,
+		String... exemptions)
 	{
-		this.crossOriginEmbedderPolicyConfiguration = crossOriginEmbedderPolicyConfiguration;
+		crossOriginEmbedderPolicyConfiguration = new CrossOriginEmbedderPolicyConfiguration(mode,
+			exemptions);
 		return this;
 	}
+
 }

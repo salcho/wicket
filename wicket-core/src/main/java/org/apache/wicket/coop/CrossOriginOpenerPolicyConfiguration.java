@@ -16,22 +16,41 @@
  */
 package org.apache.wicket.coop;
 
-import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.Application;
+import org.apache.wicket.protocol.http.WebApplication;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Specifies the configuration for Cross-Origin Opener Policy to be used for
- * {@link CoopRequestCycleListener}. Users can specify the paths that should be exempt from COOP and
- * one of 4 modes (<code>UNSAFE_NONE, SAME_ORIGIN, SAME_ORIGIN_ALLOW_POPUPS, DISABLED</code>) for the policy.
- *
+ * Specifies the configuration for Cross-Origin Opener Policy to be used by
+ * {@link CoopRequestCycleListener} when adding COOP headers. Users can specify the paths that
+ * should be exempt from COOP and one of 4 modes
+ * (<code>UNSAFE_NONE, SAME_ORIGIN, SAME_ORIGIN_ALLOW_POPUPS, DISABLED</code>) for the policy. The
+ * config object lives in {@link org.apache.wicket.settings.SecuritySettings}, users can specify
+ * their COOP preferences with the following lines in their application's
+ * {@link WebApplication#init()} method:
+ * 
+ * <pre>
+ * &#064;Override
+ * protected void init()
+ * {
+ * 	// ...
+ * 	getSecuritySettings().setCrossOriginOpenerPolicyConfiguration(CoopMode.SAME_ORIGIN,
+ * 		"EXEMPTED PATHS");
+ * 	// ...
+ * }
+ * </pre>
+ * 
+ * The config value will be read once at stratup in {@link Application#initApplication()}, changing
+ * the configuration at runtime will have no effect of the COOP headers set.
  *
  * @author Santiago Diaz - saldiaz@google.com
  * @author Ecenaz Jen Ozmen - ecenazo@google.com
  *
  * @see CoopRequestCycleListener
+ * @see org.apache.wicket.settings.SecuritySettings
  */
 public class CrossOriginOpenerPolicyConfiguration
 {
