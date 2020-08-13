@@ -98,7 +98,7 @@ public class CoopRequestCycleListenerTest extends WicketTestCase
 			throw new AssertionError("Unexpected COOP header: " + coopHeaderValue);
 		}
 	}
-
+  
 	@Override
 	protected WebApplication newApplication()
 	{
