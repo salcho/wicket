@@ -24,11 +24,16 @@ import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 import org.apache.wicket.authorization.IUnauthorizedResourceRequestListener;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
+import org.apache.wicket.coep.CrossOriginEmbedderPolicyConfiguration;
+import org.apache.wicket.coep.CrossOriginEmbedderPolicyConfiguration.CoepMode;
+import org.apache.wicket.coop.CrossOriginOpenerPolicyConfiguration;
+import org.apache.wicket.coop.CrossOriginOpenerPolicyConfiguration.CoopMode;
 import org.apache.wicket.core.random.DefaultSecureRandomSupplier;
 import org.apache.wicket.core.random.ISecureRandomSupplier;
 import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
 import org.apache.wicket.util.crypt.ICryptFactory;
 import org.apache.wicket.util.lang.Args;
+
 
 /**
  * Class for security related settings
@@ -68,6 +73,16 @@ public class SecuritySettings
 	 * This setting basically disables {@link org.apache.wicket.core.request.mapper.BookmarkableMapper}
 	 */
 	private boolean enforceMounts = false;
+
+	/**
+	 * Represents the configuration for Cross-Origin-Opener-Policy headers
+	 */
+	private CrossOriginOpenerPolicyConfiguration crossOriginOpenerPolicyConfiguration = new CrossOriginOpenerPolicyConfiguration(CoopMode.SAME_ORIGIN);
+
+	/**
+	 * Represents the configuration for Cross-Origin-Embedder-Policy headers
+	 */
+	private CrossOriginEmbedderPolicyConfiguration crossOriginEmbedderPolicyConfiguration = new CrossOriginEmbedderPolicyConfiguration(CoepMode.REPORTING);
 
 	/** Authorizer for component instantiations */
 	private static final IUnauthorizedComponentInstantiationListener DEFAULT_UNAUTHORIZED_COMPONENT_INSTANTIATION_LISTENER = new IUnauthorizedComponentInstantiationListener()
@@ -273,6 +288,30 @@ public class SecuritySettings
 	public SecuritySettings setAuthenticationStrategy(final IAuthenticationStrategy strategy)
 	{
 		authenticationStrategy = strategy;
+		return this;
+	}
+
+	public CrossOriginOpenerPolicyConfiguration getCrossOriginOpenerPolicyConfiguration()
+	{
+		return crossOriginOpenerPolicyConfiguration;
+	}
+
+	public SecuritySettings setCrossOriginOpenerPolicyConfiguration(
+		CrossOriginOpenerPolicyConfiguration crossOriginOpenerPolicyConfiguration)
+	{
+		this.crossOriginOpenerPolicyConfiguration = crossOriginOpenerPolicyConfiguration;
+		return this;
+	}
+
+	public CrossOriginEmbedderPolicyConfiguration getCrossOriginEmbedderPolicyConfiguration()
+	{
+		return crossOriginEmbedderPolicyConfiguration;
+	}
+
+	public SecuritySettings setCrossOriginEmbedderPolicyConfiguration(
+		CrossOriginEmbedderPolicyConfiguration crossOriginEmbedderPolicyConfiguration)
+	{
+		this.crossOriginEmbedderPolicyConfiguration = crossOriginEmbedderPolicyConfiguration;
 		return this;
 	}
 }

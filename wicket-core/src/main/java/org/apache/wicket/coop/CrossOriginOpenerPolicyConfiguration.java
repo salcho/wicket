@@ -25,34 +25,20 @@ import java.util.Set;
 /**
  * Specifies the configuration for Cross-Origin Opener Policy to be used for
  * {@link CoopRequestCycleListener}. Users can specify the paths that should be exempt from COOP and
- * one of 3 modes (<code>UNSAFE_NONE, SAME_ORIGIN, SAME_ORIGIN_ALLOW_POPUPS</code>) for the policy.
+ * one of 4 modes (<code>UNSAFE_NONE, SAME_ORIGIN, SAME_ORIGIN_ALLOW_POPUPS, DISABLED</code>) for the policy.
  *
- * You can enable COOP headers by adding it to the request cycle listeners in your
- * {@link org.apache.wicket.protocol.http.WebApplication#init() application's init method}:
- *
- * <pre>
- * &#064;Override
- * protected void init()
- * {
- * 	// ...
- * 	enableCoop(new CoopConfiguration.Builder().withMode(CoopMode.SAME_ORIGIN)
- * 		.withExemptions("EXEMPTED PATHS").build());
- * 	// ...
- * }
- * </pre>
  *
  * @author Santiago Diaz - saldiaz@google.com
  * @author Ecenaz Jen Ozmen - ecenazo@google.com
  *
  * @see CoopRequestCycleListener
  */
-public class CoopConfiguration
+public class CrossOriginOpenerPolicyConfiguration
 {
 	public enum CoopMode
 	{
-		UNSAFE_NONE("unsafe-none"),
-		SAME_ORIGIN("same-origin"),
-		SAME_ORIGIN_ALLOW_POPUPS("same-origin-allow-popups");
+		UNSAFE_NONE("unsafe-none"), SAME_ORIGIN("same-origin"), SAME_ORIGIN_ALLOW_POPUPS(
+			"same-origin-allow-popups"), DISABLED("");
 
 		final String keyword;
 
@@ -62,49 +48,44 @@ public class CoopConfiguration
 		}
 	}
 
-	static String COOP_HEADER = "Cross-Origin-Opener-Policy";
 
-	private final Set<String> exemptions;
+	private final Set<String> exemptions = new HashSet<>();
 	private final CoopMode mode;
 
-
-	private CoopConfiguration(Set<String> exemptions, CoopMode mode)
+	public CrossOriginOpenerPolicyConfiguration(CoopMode mode, String... exemptions)
 	{
-		this.exemptions = exemptions;
+		this.exemptions.addAll(Arrays.asList(exemptions));
 		this.mode = mode;
 	}
 
-	public static class Builder
+	public CrossOriginOpenerPolicyConfiguration(CoopMode mode)
 	{
-		// provide default values
-		private Set<String> exemptions = new HashSet<>();
-		private CoopMode mode = CoopMode.SAME_ORIGIN;
-
-		public Builder withExemptions(String... exemptions)
-		{
-			this.exemptions.addAll(Arrays.asList(exemptions));
-			return this;
-		}
-
-		public Builder withMode(CoopMode mode)
-		{
-			this.mode = mode;
-			return this;
-		}
-
-		public CoopConfiguration build()
-		{
-			return new CoopConfiguration(exemptions, mode);
-		}
+		this.mode = mode;
 	}
 
-	public boolean isExempted(String path)
+	public CrossOriginOpenerPolicyConfiguration addExemptedPath(String path)
 	{
-		return exemptions.contains(path);
+		exemptions.add(path);
+		return this;
 	}
 
-	public void addCoopHeader(WebResponse resp)
+	public Set<String> getExemptions()
 	{
-		resp.setHeader(COOP_HEADER, mode.keyword);
+		return exemptions;
+	}
+
+	public CoopMode getMode()
+	{
+		return mode;
+	}
+
+	public String getHeaderValue()
+	{
+		return mode.keyword;
+	}
+
+	public boolean isEnabled()
+	{
+		return mode != CoopMode.DISABLED;
 	}
 }

@@ -16,11 +16,12 @@
  */
 package org.apache.wicket.coop;
 
+import org.apache.wicket.settings.SecuritySettings;
 import org.apache.wicket.util.tester.WicketTestCase;
-import org.apache.wicket.coop.CoopConfiguration.CoopMode;
+import org.apache.wicket.coop.CrossOriginOpenerPolicyConfiguration.CoopMode;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.wicket.coop.CoopConfiguration.COOP_HEADER;
+import static org.apache.wicket.coop.CoopRequestCycleListener.COOP_HEADER;
 
 public class CoopRequestCycleListenerTest extends WicketTestCase
 {
@@ -28,32 +29,36 @@ public class CoopRequestCycleListenerTest extends WicketTestCase
 	@Test
 	public void testCoopHeaderSameOrigin()
 	{
-		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
-			.withMode(CoopMode.SAME_ORIGIN).withExemptions("exempt").build());
+		tester.getApplication().getSecuritySettings()
+				.setCrossOriginOpenerPolicyConfiguration(
+						new CrossOriginOpenerPolicyConfiguration(CoopMode.SAME_ORIGIN));
 		checkHeaders(CoopMode.SAME_ORIGIN);
 	}
 
 	@Test
 	public void testCoopHeaderSameOriginAllowPopups()
 	{
-		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
-				.withMode(CoopMode.SAME_ORIGIN_ALLOW_POPUPS).withExemptions("exempt").build());
+		tester.getApplication().getSecuritySettings()
+				.setCrossOriginOpenerPolicyConfiguration(
+						new CrossOriginOpenerPolicyConfiguration(CoopMode.SAME_ORIGIN_ALLOW_POPUPS));
 		checkHeaders(CoopMode.SAME_ORIGIN_ALLOW_POPUPS);
 	}
 
 	@Test
 	public void testCoopHeaderUnsafeNone()
 	{
-		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
-				.withMode(CoopMode.UNSAFE_NONE).withExemptions("exempt").build());
+		tester.getApplication().getSecuritySettings()
+				.setCrossOriginOpenerPolicyConfiguration(
+						new CrossOriginOpenerPolicyConfiguration(CoopMode.UNSAFE_NONE));
 		checkHeaders(CoopMode.UNSAFE_NONE);
 	}
 
 	@Test
 	public void testCoopHeadersNotSetExemptedPath()
 	{
-		tester.getApplication().enableCoop(new CoopConfiguration.Builder()
-			.withMode(CoopMode.SAME_ORIGIN).withExemptions("exempt").build());
+		tester.getApplication().getSecuritySettings()
+				.setCrossOriginOpenerPolicyConfiguration(
+						new CrossOriginOpenerPolicyConfiguration(CoopMode.SAME_ORIGIN).addExemptedPath("exempt"));
 		tester.executeUrl("exempt");
 		String coopHeaderValue = tester.getLastResponse().getHeader(COOP_HEADER);
 
@@ -63,7 +68,7 @@ public class CoopRequestCycleListenerTest extends WicketTestCase
 		}
 	}
 
-	private void checkHeaders( CoopMode mode)
+	private void checkHeaders(CoopMode mode)
 	{
 		tester.executeUrl("/");
 		String coopHeaderValue = tester.getLastResponse().getHeader(COOP_HEADER);
