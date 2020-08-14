@@ -767,7 +767,6 @@ public abstract class Application implements UnboundListener, IEventSink, IMetad
 		applicationListeners.onAfterInitialized(this);
 
 		validateInit();
-
 		securityInit();
 	}
 
@@ -807,6 +806,7 @@ public abstract class Application implements UnboundListener, IEventSink, IMetad
 		{
 			getRequestCycleListeners().add(new CoopRequestCycleListener(coopConfig));
 		}
+
 		CrossOriginEmbedderPolicyConfiguration coepConfig = getSecuritySettings()
 			.getCrossOriginEmbedderPolicyConfiguration();
 		if (coepConfig.isEnabled())

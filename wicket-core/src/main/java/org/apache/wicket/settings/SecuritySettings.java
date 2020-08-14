@@ -34,7 +34,6 @@ import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
 import org.apache.wicket.util.crypt.ICryptFactory;
 import org.apache.wicket.util.lang.Args;
 
-
 /**
  * Class for security related settings
  *
