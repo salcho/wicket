@@ -35,7 +35,7 @@ MyApplication.java
 
 _ResourceIsolationRequestCycleListener_ is not an alternative to _CryptoMapper_! Both of them could be used separately or in tandem to prevent CSRF attacks depending on the application requirements.
 
-Wicket also provides the deprecated (since version 9.1.0) _CsrfPreventionRequestCycleListener_ - a _IRequestCycleListener_ that forbids requests made from a different origin. By default only actions are forbidden, i.e. a request coming from different origin cannot execute _Link.onClick()_ or submit forms (_Form.onSubmit()_). Any request to render pages are still allowed so Wicket pages could be easily embedded in other applications.
+Wicket also provides the deprecated (since version 9.1.0) _CsrfPreventionRequestCycleListener_ - a _IRequestCycleListener_ that forbids requests made from a different origin. Similar to the __ResourceIsolationRequestCycleListener__ by default only actions are forbidden, i.e. a request coming from different origin cannot execute _Link.onClick()_ or submit forms (_Form.onSubmit()_). Any request to render pages are still allowed so Wicket pages could be easily embedded in other applications.
 
 MyApplication.java
 [source,java]
