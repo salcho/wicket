@@ -51,4 +51,3 @@ MyApplication.java
 _CsrfPreventionRequestCycleListener_ is highly configurable. It allows to define a whitelist of allowed origins via _addAcceptedOrigin(String acceptedOrigin)_, to enable/disable it dynamically by overriding _isEnabled()_, to define different kind of actions when a request is rejected or allowed, to set custom error message and code for the rejected requests.
 
 _CsrfPreventionRequestCycleListener_ is not an alternative to _CryptoMapper_! Both of them could be used separately or in tandem to prevent CSRF attacks depending on the application requirements.
-
